@@ -4,21 +4,22 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
-class DatabaseSeeder extends Seeder
+class UrlSeeder extends Seeder
 {
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * Run the database seeds.
      *
      * @return void
      */
     public function run()
     {
-        $this->call([
-            UserSeeder::class,
-            UrlSeeder::class,
+        DB::table('urls')->insert([
+            'name' => 'Itubombas',
+            'address' => 'https://www.itubombas.com.br/',
         ]);
     }
 }
