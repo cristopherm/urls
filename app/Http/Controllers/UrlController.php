@@ -2,10 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUrlRequest;
+use App\Models\Url;
+use App\Repositories\UrlRepository;
 use Illuminate\Http\Request;
+use Throwable;
 
 class UrlController extends Controller
 {
+    /**
+     * UrlController constructor.
+     *
+     * @param  \App\Repositories\Interfaces\UrlRepository $urlRepository
+     */
+    public function __construct(private UrlRepository $urlRepository)
+    {
+        // $this->authorizeResource(Administrator::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -13,7 +27,10 @@ class UrlController extends Controller
      */
     public function index()
     {
-        //
+        return view('app.urls.index', [
+            'pageName' => __('urls.pages.index'),
+            'urls' => Url::paginate(10),
+        ]);
     }
 
     /**
@@ -23,7 +40,9 @@ class UrlController extends Controller
      */
     public function create()
     {
-        //
+        return view('app.urls.create', [
+            'pageName' => __('urls.pages.create')
+        ]);
     }
 
     /**
@@ -32,20 +51,31 @@ class UrlController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUrlRequest $request)
     {
-        //
+        try {
+            $this->urlRepository->create($request->validated());
+
+            flashSuccess(__('urls.responses.create.success'));
+
+            return redirect()->route('urls.index');
+        } catch (Throwable $th) {
+            return back()->withErrors($th->getMessage());
+        }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+      * @param Url $url
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Url $url)
     {
-        //
+        return view('app.urls.show', [
+            'url' => $url,
+            'pageName' => __('urls.pages.show')
+        ]);
     }
 
     /**
@@ -74,11 +104,19 @@ class UrlController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+      * @param Url $url
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Url $url)
     {
-        //
+        try {
+            $this->urlRepository->delete($url);
+
+            flashSuccess(__('urls.responses.delete.success'));
+
+            return redirect()->route('urls.index');
+        } catch (Throwable $th) {
+            return back()->withErrors($th->getMessage());
+        }
     }
 }

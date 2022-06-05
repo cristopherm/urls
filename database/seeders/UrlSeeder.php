@@ -18,8 +18,8 @@ class UrlSeeder extends Seeder
     public function run()
     {
         DB::table('urls')->insert([
-            'name' => 'Itubombas',
-            'address' => 'https://www.itubombas.com.br/',
+            'name' => 'Google',
+            'address' => 'https://www.google.com.br/',
         ]);
     }
 }

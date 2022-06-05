@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('tracking_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('url_id')->constrained();
+            $table->foreignId('url_id')->constrained()->onDelete('cascade');
             $table->smallInteger('status_code');
-            $table->text('body');
+            $table->longText('body');
             $table->timestamps();
         });
     }

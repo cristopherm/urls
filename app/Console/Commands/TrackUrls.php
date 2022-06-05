@@ -2,10 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Models\TrackingLog;
 use App\Models\Url;
+use App\Repositories\UrlRepository;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Http;
 
 class TrackUrls extends Command
 {
@@ -32,13 +31,7 @@ class TrackUrls extends Command
     {
         Url::chunk(10, function ($urls) {
             foreach ($urls as $url) {
-                $response = Http::get($url->address);
-
-                TrackingLog::create([
-                    'url_id' => $url->id,
-                    'status_code' => $response->status(),
-                    'body' => $response->body(),
-                ]);
+                (new UrlRepository())->trackUrl($url);
             }
         });
     }
