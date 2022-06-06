@@ -16,10 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('login'));
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
-
 Route::group(['middleware' => ['auth']], function () {
     // Url routes.
     Route::prefix('urls')->group(function () {
@@ -27,6 +23,7 @@ Route::group(['middleware' => ['auth']], function () {
         Route::get('create', [UrlController::class, 'create'])->name('urls.create');
         Route::post('', [UrlController::class, 'store'])->name('urls.store');
         Route::get('{url}', [UrlController::class, 'show'])->name('urls.show');
+        Route::get('{log}/body', [UrlController::class, 'showBody'])->name('urls.show_body');
         Route::get('{url}/edit', [UrlController::class, 'edit'])->name('urls.edit');
         Route::put('{url}', [UrlController::class, 'update'])->name('urls.update');
         Route::delete('{url}', [UrlController::class, 'destroy'])->name('urls.destroy');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUrlRequest;
+use App\Models\TrackingLog;
 use App\Models\Url;
 use App\Repositories\UrlRepository;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class UrlController extends Controller
      */
     public function __construct(private UrlRepository $urlRepository)
     {
-        // $this->authorizeResource(Administrator::class);
+        $this->authorizeResource(Url::class);
     }
 
     /**
@@ -67,14 +68,32 @@ class UrlController extends Controller
     /**
      * Display the specified resource.
      *
-      * @param Url $url
+     * @param Url $url
      * @return \Illuminate\Http\Response
      */
     public function show(Url $url)
     {
+        $url->with('logs');
+
         return view('app.urls.show', [
             'url' => $url,
             'pageName' => __('urls.pages.show')
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param TrackingLog $log
+     * @return \Illuminate\Http\Response
+     */
+    public function showBody(TrackingLog $log)
+    {
+        $this->authorize('view', $log);
+
+        return view('app.urls.show_body', [
+            'log' => $log,
+            'pageName' => __('urls.pages.show_body')
         ]);
     }
 

@@ -4,12 +4,14 @@ namespace App\Repositories;
 
 use App\Models\TrackingLog;
 use App\Models\Url;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Throwable;
 
 /**
@@ -99,11 +101,16 @@ class UrlRepository implements Interfaces\UrlRepositoryInterface
             $response = Http::send('GET', $url->address, ['headers' => ['Accept-Language' => 'pt']]);
 
             DB::transaction(function () use ($url, $response) {
-                TrackingLog::create([
+                $log = TrackingLog::create([
                     'url_id' => $url->id,
                     'status_code' => $response->status(),
-                    'body' => utf8_encode($response->body()),
                 ]);
+
+                Storage::put("pages/{$url->id}/{$log->id}.html", $response->body());
+
+                $url->last_status_code = $response->status();
+                $url->last_verified_at = Carbon::now();
+                $url->save();
             });
         } catch (Throwable $th) {
             Log::error($th);

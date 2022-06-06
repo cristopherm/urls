@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable();
             $table->string('address', 2048);
+            $table->smallInteger('last_status_code')->nullable();
+            $table->dateTime('last_verified_at')->nullable();
             $table->timestamps();
         });
     }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * TrackingLog model.
@@ -13,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property  int $id
  * @property  int $url_id
  * @property  int $status_code
- * @property  string $body
  * @property  \Carbon\Carbon $created_at
  * @property  \Carbon\Carbon $updated_at
  */
@@ -29,6 +29,17 @@ class TrackingLog extends Model
     protected $fillable = [
         'url_id',
         'status_code',
-        'body',
     ];
+
+    /**
+     * Body mutator.
+     *
+     * @return string
+     */
+    public function getBodyAttribute(): string
+    {
+        $content = Storage::get("pages/{$this->url_id}/{$this->id}.html");
+
+        return $content ??  '';
+    }
 }

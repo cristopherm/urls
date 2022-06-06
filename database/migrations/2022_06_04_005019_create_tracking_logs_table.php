@@ -17,7 +17,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('url_id')->constrained()->onDelete('cascade');
             $table->smallInteger('status_code');
-            $table->longText('body');
             $table->timestamps();
         });
     }
