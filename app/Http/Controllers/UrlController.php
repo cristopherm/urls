@@ -30,7 +30,6 @@ class UrlController extends Controller
     {
         return view('app.urls.index', [
             'pageName' => __('urls.pages.index'),
-            'urls' => Url::paginate(10),
         ]);
     }
 

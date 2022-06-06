@@ -5,4 +5,5 @@ return [
     'delete' => 'Excluir',
     'back' => 'Voltar',
     'send' => 'Enviar',
+    'reload' => 'Atualizar',
 ];

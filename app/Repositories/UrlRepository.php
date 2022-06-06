@@ -26,7 +26,7 @@ class UrlRepository implements Interfaces\UrlRepositoryInterface
      */
     public function get(int $page = 0): Collection|LengthAwarePaginator
     {
-        return Url::query()->paginate(page: $page);
+        return Url::query()->paginate($page);
     }
 
     /**
@@ -106,7 +106,7 @@ class UrlRepository implements Interfaces\UrlRepositoryInterface
                     'status_code' => $response->status(),
                 ]);
 
-                Storage::put("pages/{$url->id}/{$log->id}.html", $response->body());
+                Storage::put("pages/{$url->id}/{$log->id}.html", utf8_encode($response->body()));
 
                 $url->last_status_code = $response->status();
                 $url->last_verified_at = Carbon::now();

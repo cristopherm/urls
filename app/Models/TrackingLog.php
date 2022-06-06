@@ -38,8 +38,8 @@ class TrackingLog extends Model
      */
     public function getBodyAttribute(): string
     {
-        $content = Storage::get("pages/{$this->url_id}/{$this->id}.html");
+        $content = Storage::get("pages/{$this->url_id}/{$this->id}.html") ?? '';
 
-        return $content ??  '';
+        return $content;
     }
 }
