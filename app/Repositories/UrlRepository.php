@@ -6,6 +6,8 @@ use App\Models\TrackingLog;
 use App\Models\Url;
 use Carbon\Carbon;
 use Exception;
+use GuzzleHttp\Psr7\Header;
+use Illuminate\Http\Client\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -83,6 +85,8 @@ class UrlRepository implements Interfaces\UrlRepositoryInterface
     {
         try {
             DB::transaction(function () use ($url) {
+                Storage::deleteDirectory("pages/{$url->id}");
+
                 $url->delete();
             });
         } catch (Throwable $th) {
@@ -99,14 +103,15 @@ class UrlRepository implements Interfaces\UrlRepositoryInterface
     {
         try {
             $response = Http::send('GET', $url->address, ['headers' => ['Accept-Language' => 'pt']]);
+            $body = $this->convertToUtf8($response);
 
-            DB::transaction(function () use ($url, $response) {
+            DB::transaction(function () use ($url, $response, $body) {
                 $log = TrackingLog::create([
                     'url_id' => $url->id,
                     'status_code' => $response->status(),
                 ]);
 
-                Storage::put("pages/{$url->id}/{$log->id}.html", utf8_encode($response->body()));
+                Storage::put("pages/{$url->id}/{$log->id}.html", $body);
 
                 $url->last_status_code = $response->status();
                 $url->last_verified_at = Carbon::now();
@@ -115,5 +120,20 @@ class UrlRepository implements Interfaces\UrlRepositoryInterface
         } catch (Throwable $th) {
             Log::error($th);
         }
+    }
+
+    /**
+     * Converts a string to UTF-8 enconding.
+     *
+     * @param Response $response
+     * @return string
+     */
+    protected function convertToUtf8(Response $response): string
+    {
+        $type = $response->getHeader('content-type');
+        $parsed = Header::parse($type);
+        $originalBody = (string) $response->getBody();
+
+        return mb_convert_encoding($originalBody, 'UTF-8', $parsed[0]['charset'] ?? 'UTF-8');
     }
 }

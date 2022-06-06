@@ -26,7 +26,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($url->logs as $log)
+                    @foreach ($logs as $log)
                         <tr>
                             <td>{{ $log->status_code }}</td>
                             <td>{{ $log->created_at }}</td>
@@ -35,6 +35,8 @@
                     @endforeach
                 </tbody>
             </table>
+
+            {{ $logs->links() }}
         </div>
     </div>
 </x-app-layout>

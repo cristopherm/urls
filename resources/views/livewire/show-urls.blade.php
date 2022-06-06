@@ -20,8 +20,7 @@
             @foreach ($urls as $url)
                 <tr>
                     <th scope="row">
-                        {{ $url->id }} &nbsp;
-                        <a href="{{ route('urls.show', [$url->id]) }}">@include('icons.external')</a>
+                        <a class="text-decoration-none" href="{{ route('urls.show', [$url->id]) }}">{{ $url->id }} &nbsp; @include('icons.external')</a>
                     </th>
                     <td>{{ $url->name }}</td>
                     <td><a href="{{ $url->address }}" target="_blank">{{ $url->address }}</a></td>
