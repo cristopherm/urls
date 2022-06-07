@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Models\Url;
+use App\Http\Livewire\Concerns\ResetsPage;
 use App\Repositories\UrlRepository;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
@@ -12,6 +12,7 @@ class ShowUrls extends Component
 {
     use AuthorizesRequests;
     use WithPagination;
+    use ResetsPage;
 
     const PER_PAGE = 10;
 
@@ -39,13 +40,5 @@ class ShowUrls extends Component
         return view('livewire.show-urls', [
             'urls' => $this->urlRepository->get(self::PER_PAGE),
         ]);
-    }
-
-    /**
-     * Resets the page.
-     */
-    public function onResetPage()
-    {
-        $this->resetPage();
     }
 }

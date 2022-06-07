@@ -72,13 +72,8 @@ class UrlController extends Controller
      */
     public function show(Url $url)
     {
-        $logs = TrackingLog::where('url_id', $url->id)
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
-
         return view('app.urls.show', [
             'url' => $url,
-            'logs' => $logs,
             'pageName' => __('urls.pages.show')
         ]);
     }
